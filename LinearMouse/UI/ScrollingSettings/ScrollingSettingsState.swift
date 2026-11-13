@@ -88,6 +88,11 @@ class ScrollingSettingsState: ObservableObject {
 }
 
 extension ScrollingSettingsState {
+    var actionThrottling: Bool {
+        get { mergedScheme.scrolling.actionThrottling ?? true }
+        set { scheme.scrolling.actionThrottling = newValue }
+    }
+
     var reverseScrolling: Bool {
         get { mergedScheme.scrolling.reverse[direction] ?? false }
         set { scheme.scrolling.reverse[direction] = newValue }

@@ -5,6 +5,21 @@
 import XCTest
 
 final class ConfigurationTests: XCTestCase {
+    func testScrollActionThrottlingRoundTripAndInheritance() throws {
+        var scrolling = Scheme.Scrolling()
+        XCTAssertNil(scrolling.actionThrottling)
+        let override = try JSONDecoder().decode(
+            Scheme.Scrolling.self, from: Data(#"{"actionThrottling":false}"#.utf8)
+        )
+        override.merge(into: &scrolling)
+        Scheme.Scrolling().merge(into: &scrolling)
+        XCTAssertEqual(scrolling.actionThrottling, false)
+        let decoded = try JSONDecoder().decode(
+            Scheme.Scrolling.self, from: JSONEncoder().encode(scrolling)
+        )
+        XCTAssertEqual(decoded.actionThrottling, false)
+    }
+
     func testDump() throws {
         try print(Configuration(schemes: []).dump())
     }

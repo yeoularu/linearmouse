@@ -7,6 +7,36 @@ import XCTest
 final class ScrollActionRecognizerTests: XCTestCase {
     private typealias Input = ScrollActionRecognizer.Input
 
+    func testThrottleOptionPreservesUpstreamIncrementalControlPolicy() {
+        let actions: [Scheme.Buttons.Mapping.Action] = [
+            .arg0(.mediaVolumeUp), .arg0(.mediaVolumeDown),
+            .arg0(.displayBrightnessUp), .arg0(.displayBrightnessDown),
+            .arg0(.keyboardBrightnessUp), .arg0(.keyboardBrightnessDown)
+        ]
+        for enabled in [true, false] {
+            for action in actions {
+                let recognizer = ScrollActionRecognizer(throttle: .init(enabled: enabled))
+                let input = Input(axis: .vertical, delta: 1, units: .detents)
+                for time: UInt64 in [0, 125_000, 250_000] {
+                    let count = recognizer.consume(input, mapping: 0, policy: action.scrollActionPolicy, at: time)
+                    XCTAssertEqual(action.scrollActions(steps: count), [action])
+                }
+            }
+        }
+    }
+
+    func testDisabledThrottleStillCountsHighResolutionDetentsForSpaceCommands() {
+        let recognizer = ScrollActionRecognizer(throttle: .init(enabled: false))
+        let action = Scheme.Buttons.Mapping.Action.arg0(.missionControlSpaceRight)
+        let input = Input(axis: .vertical, delta: 0.125, units: .detents)
+        let counts = (0 ..< 16).map {
+            recognizer.consume(input, mapping: 0, policy: action.scrollActionPolicy, at: UInt64($0) * 125_000)
+        }
+        XCTAssertEqual(counts.reduce(0, +), 2)
+        XCTAssertEqual(counts.prefix(3).reduce(0, +), 0)
+        XCTAssertEqual(counts[3], 1)
+    }
+
     func testHighResolutionInputPreservesBothAxisDirectionsAfterReversal() throws {
         for axis: Input.Axis in [.horizontal, .vertical] {
             for direction in [-1.0, 1.0] {

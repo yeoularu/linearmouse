@@ -761,6 +761,10 @@ You can specify `shift`, `option` and `control` as well.
 > **Note**  
 > You will have to grant an additional permission to allow LinearMouse to simulate keys.
 
+Set `buttons.instantSpaceSwitch` to `true` to try an immediate move for those two actions.
+It falls back to the system animation when the private call is unavailable. Requires macOS 27
+or later; older versions use the system animation.
+
 ### Key repeat
 
 With a `press` outcome whose behavior is `repeat`, actions are repeated until the trigger is
@@ -1169,3 +1173,7 @@ or synthetic pointer input cannot borrow another device's setting.
 The implementation uses dynamically resolved macOS private focus APIs. It
 requires the usual Accessibility permission, not a Dock injection or disabled
 SIP. Unsupported windows or unavailable APIs are skipped without a raise fallback.
+
+## Scroll action throttling
+
+Set `scrolling.actionThrottling` to `false` to disable the default 300 ms per-axis limit on wheel-triggered commands.

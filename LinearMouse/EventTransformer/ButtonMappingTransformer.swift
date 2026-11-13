@@ -101,6 +101,7 @@ final class ButtonMappingTransformer: EventTransformer {
     init(
         mappings: [Mapping],
         universalBackForward: Scheme.Buttons.UniversalBackForward? = nil,
+        instantSpaceSwitch: Bool = false,
         policy: ButtonMappingPolicy = .default,
         swapsPrimaryAndSecondaryButtons: Bool = false,
         scheduleTimer: @escaping TimerScheduler = ButtonMappingTransformer.scheduleEventThreadTimer,
@@ -126,6 +127,7 @@ final class ButtonMappingTransformer: EventTransformer {
         self.highResolutionWheelMultiplier = highResolutionWheelMultiplier
         actionExecutor = .init(
             universalBackForward: universalBackForward,
+            instantSpaceSwitch: instantSpaceSwitch,
             keySimulator: keySimulator
         )
         self.scheduleTimer = scheduleTimer

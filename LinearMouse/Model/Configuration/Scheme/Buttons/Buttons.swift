@@ -20,6 +20,8 @@ extension Scheme {
 
         var switchPrimaryButtonAndSecondaryButtons: Bool?
 
+        var instantSpaceSwitch: Bool?
+
         @ImplicitOptional var clickDebouncing: ClickDebouncing
 
         @ImplicitOptional var autoScroll: AutoScroll
@@ -46,6 +48,10 @@ extension Scheme.Buttons {
 
         if let switchPrimaryButtonAndSecondaryButtons {
             buttons.switchPrimaryButtonAndSecondaryButtons = switchPrimaryButtonAndSecondaryButtons
+        }
+
+        if let instantSpaceSwitch {
+            buttons.instantSpaceSwitch = instantSpaceSwitch
         }
 
         if let clickDebouncing = $clickDebouncing {
@@ -76,6 +82,7 @@ extension Scheme.Buttons {
         case swipe
         case universalBackForward
         case switchPrimaryButtonAndSecondaryButtons
+        case instantSpaceSwitch
         case clickDebouncing
         case autoScroll
         case gesture
@@ -97,6 +104,7 @@ extension Scheme.Buttons {
             Bool.self,
             forKey: .switchPrimaryButtonAndSecondaryButtons
         )
+        instantSpaceSwitch = try container.decodeIfPresent(Bool.self, forKey: .instantSpaceSwitch)
         _clickDebouncing = try container.decode(
             ImplicitOptional<ClickDebouncing>.self,
             forKey: .clickDebouncing
@@ -119,6 +127,7 @@ extension Scheme.Buttons {
             switchPrimaryButtonAndSecondaryButtons,
             forKey: .switchPrimaryButtonAndSecondaryButtons
         )
+        try container.encodeIfPresent(instantSpaceSwitch, forKey: .instantSpaceSwitch)
         try container.encode(_clickDebouncing, forKey: .clickDebouncing)
         try container.encode(_autoScroll, forKey: .autoScroll)
         try container.encode(_gesture, forKey: .gesture)

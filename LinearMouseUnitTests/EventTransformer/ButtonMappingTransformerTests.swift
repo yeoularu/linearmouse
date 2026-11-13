@@ -115,6 +115,27 @@ final class ButtonMappingTransformerTests: XCTestCase {
         super.tearDown()
     }
 
+    func testConfiguredThrottleReachesTheRealMappingRoute() throws {
+        defer { ConfigurationState.shared.configuration = .init() }
+        for enabled in [true, false] {
+            let simulator = ButtonMappingTestKeySimulator()
+            var scheme = Scheme()
+            scheme.scrolling.actionThrottling = enabled
+            scheme.buttons.mappings = [
+                .init(scroll: .up, action: .arg1(.keyPress([.a])))
+            ]
+            ConfigurationState.shared.configuration = .init(schemes: [scheme])
+            let manager = EventTransformerManager(keySimulator: simulator)
+            let route = manager.get(withDevice: nil, withPid: nil, withDisplay: nil)
+            for _ in 0 ..< 3 {
+                XCTAssertNil(try route.transform(scrollEvent(vertical: 1), in: .init(device: nil)))
+            }
+            assertScrollKeyEvents(
+                simulator, equal: Array(repeating: .press([.a]), count: enabled ? 1 : 3)
+            )
+        }
+    }
+
     func testHIDSideButtonReportsExecuteMappingsWithAndWithoutOption() throws {
         for button in 3 ... 4 {
             for flags: CGEventFlags in [[], .maskAlternate] {

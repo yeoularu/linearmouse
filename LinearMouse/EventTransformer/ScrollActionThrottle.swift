@@ -7,9 +7,17 @@ import Foundation
 /// Directions share a deadline on each axis; unrelated input cannot reset it.
 final class ScrollActionThrottle {
     private static let intervalNanoseconds: UInt64 = 300_000_000
+    private let enabled: Bool
     private var lastActionTimes: [ScrollInput.Axis: UInt64] = [:]
 
+    init(enabled: Bool = true) {
+        self.enabled = enabled
+    }
+
     func allowsAction(on axis: ScrollInput.Axis, at now: UInt64) -> Bool {
+        guard enabled else {
+            return true
+        }
         if let last = lastActionTimes[axis], now >= last, now - last < Self.intervalNanoseconds {
             return false
         }

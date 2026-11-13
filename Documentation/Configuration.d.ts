@@ -187,6 +187,14 @@ declare namespace Scheme {
     reverse?: Scrolling.Bidirectional<boolean>;
 
     /**
+     * @title Throttle scroll actions (Dev)
+     * @description Limit wheel-triggered commands to once every 300 ms per axis.
+     * Disable to allow commands on every eligible scroll input.
+     * @default true
+     */
+    actionThrottling?: boolean;
+
+    /**
      * @title Scroll distance
      * @description The distance after rolling the wheel.
      */
@@ -507,6 +515,13 @@ declare namespace Scheme {
      * @default false
      */
     switchPrimaryButtonAndSecondaryButtons?: boolean;
+
+    /**
+     * @title Instant space switch (Dev)
+     * @description When a button runs Move left a space or Move right a space, try to move one desktop immediately through a private macOS API. Falls back to the system space animation when that API is unavailable. Requires macOS 27 or later; older versions use the system animation.
+     * @default false
+     */
+    instantSpaceSwitch?: boolean;
 
     /**
      * @title Debounce button clicks

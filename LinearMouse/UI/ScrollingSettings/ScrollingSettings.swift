@@ -20,6 +20,16 @@ struct ScrollingSettings: View {
 
                     ScrollingModeSection()
 
+                    Section {
+                        Toggle(isOn: $state.actionThrottling) {
+                            withDescription {
+                                Text("Throttle scroll actions (Dev)")
+                                Text("Limit wheel-triggered commands to once every 300 ms. Turning this off may repeat commands rapidly.")
+                            }
+                        }
+                    }
+                    .modifier(SectionViewModifier())
+
                     ModifierKeysSection()
                 }
                 .modifier(FormViewModifier())

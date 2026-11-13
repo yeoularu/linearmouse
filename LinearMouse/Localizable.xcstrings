@@ -2952,6 +2952,28 @@
         }
       }
     },
+    "Instant space switch (Dev)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "즉시 데스크톱 전환 (Dev)"
+          }
+        }
+      }
+    },
+    "Limit wheel-triggered commands to once every 300 ms. Turning this off may repeat commands rapidly." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "휠로 실행하는 명령을 300ms에 한 번으로 제한합니다. 끄면 명령이 빠르게 반복될 수 있습니다."
+          }
+        }
+      }
+    },
     "Move the pointer the way you want the content to go." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3378,6 +3400,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "反轉方向"
+          }
+        }
+      }
+    },
+    "Throttle scroll actions (Dev)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스크롤 동작 실행 간격 제한 (Dev)"
+          }
+        }
+      }
+    },
+    "When a button runs Move left a space or Move right a space, move one desktop immediately. Requires macOS 27 or later. Uses a private macOS API and falls back to the system animation if that is unavailable." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "왼쪽 또는 오른쪽 데스크톱으로 이동하는 버튼 동작을 즉시 실행합니다. macOS 27 이상이 필요하며, 비공개 API를 사용할 수 없으면 기본 전환 애니메이션을 사용합니다."
           }
         }
       }

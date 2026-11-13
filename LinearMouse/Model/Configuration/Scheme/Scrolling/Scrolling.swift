@@ -5,6 +5,7 @@ import Foundation
 
 extension Scheme {
     struct Scrolling: Codable, Equatable, ImplicitInitable {
+        var actionThrottling: Bool?
         @ImplicitOptional var reverse: Bidirectional<Bool>
         @ImplicitOptional var distance: Bidirectional<Distance>
         @ImplicitOptional var acceleration: Bidirectional<Decimal>
@@ -34,6 +35,9 @@ extension Scheme {
 
 extension Scheme.Scrolling {
     func merge(into scrolling: inout Self) {
+        if let actionThrottling {
+            scrolling.actionThrottling = actionThrottling
+        }
         $reverse?.merge(into: &scrolling.reverse)
         $distance?.merge(into: &scrolling.distance)
         $acceleration?.merge(into: &scrolling.acceleration)

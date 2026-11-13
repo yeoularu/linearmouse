@@ -134,6 +134,12 @@
           "description": "Legacy gesture configuration, migrated to button mappings on startup. Use mappings with swipe outcomes for new configurations.",
           "title": "Gesture button (deprecated)"
         },
+        "instantSpaceSwitch": {
+          "default": false,
+          "description": "When a button runs Move left a space or Move right a space, try to move one desktop immediately through a private macOS API. Falls back to the system space animation when that API is unavailable. Requires macOS 27 or later; older versions use the system animation.",
+          "title": "Instant space switch (Dev)",
+          "type": "boolean"
+        },
         "mappings": {
           "description": "Assign actions to buttons, chords, long presses, swipes, and wheel gestures.",
           "items": {
@@ -1566,6 +1572,12 @@
           ],
           "default": 1,
           "description": "The scrolling acceleration."
+        },
+        "actionThrottling": {
+          "default": true,
+          "description": "Limit wheel-triggered commands to once every 300 ms per axis.\nDisable to allow commands on every eligible scroll input.",
+          "title": "Throttle scroll actions (Dev)",
+          "type": "boolean"
         },
         "distance": {
           "anyOf": [

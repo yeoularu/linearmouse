@@ -87,6 +87,7 @@ struct ButtonsSettings: View {
                 AutoScrollSection()
             case .buttonMappings:
                 ButtonMappingsSection()
+                InstantSpaceSwitchSection()
                 SwipeSettingsSection()
             }
         }

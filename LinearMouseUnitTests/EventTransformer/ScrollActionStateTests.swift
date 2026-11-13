@@ -5,6 +5,15 @@
 import XCTest
 
 final class ScrollActionStateTests: XCTestCase {
+    func testDisabledThrottleAcceptsRapidActionsOnBothAxes() {
+        let throttle = ScrollActionThrottle(enabled: false)
+        for axis: ScrollInput.Axis in [.horizontal, .vertical] {
+            for time: UInt64 in [0, 0, 1, 125_000, 299_999_999] {
+                XCTAssertTrue(throttle.allowsAction(on: axis, at: time))
+            }
+        }
+    }
+
     func testUniformThrottleBoundaryIsExactly300Milliseconds() {
         let throttle = ScrollActionThrottle()
         for axis: ScrollInput.Axis in [.horizontal, .vertical] {

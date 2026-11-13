@@ -67,6 +67,15 @@ extension ButtonsSettingsState {
         }
     }
 
+    var instantSpaceSwitch: Bool {
+        get {
+            mergedScheme.buttons.instantSpaceSwitch ?? false
+        }
+        set {
+            scheme.buttons.instantSpaceSwitch = newValue
+        }
+    }
+
     var clickDebouncingEnabled: Bool {
         get {
             mergedScheme.buttons.clickDebouncing.timeout ?? 0 > 0

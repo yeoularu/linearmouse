@@ -4,6 +4,7 @@
 import Combine
 import Defaults
 import Foundation
+import KeyKit
 import LRUCache
 import os.log
 
@@ -152,14 +153,17 @@ class EventTransformerManager {
     }
 
     private let warpPointer: (CGPoint) -> Void
+    private let keySimulator: KeySimulating?
     private let postEvent: (CGEvent, CGEventTapLocation) -> Void
 
     init(
         warpPointer: @escaping (CGPoint) -> Void = { CGWarpMouseCursorPosition($0) },
-        postEvent: @escaping (CGEvent, CGEventTapLocation) -> Void = { $0.post(tap: $1) }
+        postEvent: @escaping (CGEvent, CGEventTapLocation) -> Void = { $0.post(tap: $1) },
+        keySimulator: KeySimulating? = nil
     ) {
         self.warpPointer = warpPointer
         self.postEvent = postEvent
+        self.keySimulator = keySimulator
         ConfigurationState.shared
             .$configuration
             .removeDuplicates()
@@ -904,7 +908,8 @@ class EventTransformerManager {
                 threshold: Double(gesture.threshold ?? 50),
                 deadZone: Double(gesture.deadZone ?? 40),
                 cooldownMs: gesture.cooldownMs ?? 500,
-                actions: gesture.actions
+                actions: gesture.actions,
+                instantSpaceSwitch: scheme.buttons.instantSpaceSwitch == true
             )
         } else {
             nil
@@ -937,12 +942,15 @@ class EventTransformerManager {
         // Otherwise smoothing/distance settings change shortcut trigger frequency.
         if !buttonMappings.isEmpty {
             let scrollRecognizer = ScrollActionRecognizer(
-                throttle: scrollThrottle(for: device), gesture: scrollGesture
+                throttle: scrollThrottle(for: device, enabled: scheme.scrolling.actionThrottling ?? true),
+                gesture: scrollGesture
             )
             eventTransformer.append(ButtonMappingTransformer(
                 mappings: buttonMappings,
                 universalBackForward: scheme.buttons.universalBackForward,
+                instantSpaceSwitch: scheme.buttons.instantSpaceSwitch == true,
                 policy: .configured(by: scheme.buttons.swipe),
+                keySimulator: keySimulator,
                 scrollRecognizer: scrollRecognizer,
                 gestureTransformer: gestureTransformer,
                 warpPointer: warpPointer,
@@ -975,7 +983,7 @@ class EventTransformerManager {
            hasSmoothedScrolling {
             eventTransformer.append(ModifierActionsTransformer(
                 modifiers: modifiers,
-                scrollThrottle: scrollThrottle(for: device),
+                scrollThrottle: scrollThrottle(for: device, enabled: scheme.scrolling.actionThrottling ?? true),
                 scrollGesture: scrollGesture
             ))
         }
@@ -1047,7 +1055,7 @@ class EventTransformerManager {
            !hasSmoothedScrolling {
             eventTransformer.append(ModifierActionsTransformer(
                 modifiers: modifiers,
-                scrollThrottle: scrollThrottle(for: device),
+                scrollThrottle: scrollThrottle(for: device, enabled: scheme.scrolling.actionThrottling ?? true),
                 scrollGesture: scrollGesture
             ))
         }
@@ -1261,7 +1269,10 @@ class EventTransformerManager {
         }
     }
 
-    private func scrollThrottle(for device: Device?) -> ScrollActionThrottle {
+    private func scrollThrottle(for device: Device?, enabled: Bool) -> ScrollActionThrottle {
+        guard enabled else {
+            return ScrollActionThrottle(enabled: false)
+        }
         let key = device.map { InteractionKey.device($0.id) } ?? .unidentified
         if let throttle = scrollThrottles[key] {
             return throttle

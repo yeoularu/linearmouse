@@ -19,6 +19,7 @@ class GestureButtonTransformer {
     private let deadZone: Double
     private let cooldownMs: Int
     private let actions: Scheme.Buttons.Gesture.Actions
+    private let instantSpaceSwitch: Bool
 
     /// State machine
     private enum State {
@@ -35,7 +36,8 @@ class GestureButtonTransformer {
         threshold: Double,
         deadZone: Double,
         cooldownMs: Int,
-        actions: Scheme.Buttons.Gesture.Actions
+        actions: Scheme.Buttons.Gesture.Actions,
+        instantSpaceSwitch: Bool = false
     ) {
         self.trigger = trigger
         let defaultButton = UInt32(CGMouseButton.center.rawValue)
@@ -45,6 +47,7 @@ class GestureButtonTransformer {
         self.deadZone = deadZone
         self.cooldownMs = cooldownMs
         self.actions = actions
+        self.instantSpaceSwitch = instantSpaceSwitch
     }
 }
 
@@ -289,10 +292,14 @@ extension GestureButtonTransformer: EventTransformer {
             break
 
         case .spaceLeft:
-            try postSymbolicHotKey(.spaceLeft)
+            ButtonActionExecutor(instantSpaceSwitch: instantSpaceSwitch).perform(
+                .arg0(.missionControlSpaceLeft), targetBundleIdentifier: nil
+            )
 
         case .spaceRight:
-            try postSymbolicHotKey(.spaceRight)
+            ButtonActionExecutor(instantSpaceSwitch: instantSpaceSwitch).perform(
+                .arg0(.missionControlSpaceRight), targetBundleIdentifier: nil
+            )
 
         case .missionControl:
             missionControl()

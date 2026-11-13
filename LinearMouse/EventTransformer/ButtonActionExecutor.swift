@@ -45,6 +45,7 @@ final class ButtonActionExecutor {
     }
 
     let universalBackForward: Scheme.Buttons.UniversalBackForward?
+    let instantSpaceSwitch: Bool
     let runtimeState: RuntimeState
     private let repeatTimingProvider: RepeatTimingProvider
     private let scheduleTimer: TimerScheduler
@@ -54,12 +55,14 @@ final class ButtonActionExecutor {
 
     init(
         universalBackForward: Scheme.Buttons.UniversalBackForward? = nil,
+        instantSpaceSwitch: Bool = false,
         runtimeState: RuntimeState = .init(),
         keySimulator: KeySimulating? = nil,
         repeatTimingProvider: @escaping RepeatTimingProvider = ButtonActionExecutor.systemRepeatTimings,
         scheduleTimer: @escaping TimerScheduler = ButtonActionExecutor.scheduleEventThreadTimer
     ) {
         self.universalBackForward = universalBackForward
+        self.instantSpaceSwitch = instantSpaceSwitch
         self.runtimeState = runtimeState
         self.keySimulator = keySimulator ?? Self.defaultKeySimulator
         self.repeatTimingProvider = repeatTimingProvider
@@ -505,9 +508,15 @@ extension ButtonActionExecutor {
             return
 
         case .arg0(.missionControlSpaceLeft):
+            if instantSpaceSwitch, InstantSpaceSwitch.perform(.left) {
+                return
+            }
             try postSymbolicHotKey(.spaceLeft)
 
         case .arg0(.missionControlSpaceRight):
+            if instantSpaceSwitch, InstantSpaceSwitch.perform(.right) {
+                return
+            }
             try postSymbolicHotKey(.spaceRight)
 
         case .arg0(.missionControl):
